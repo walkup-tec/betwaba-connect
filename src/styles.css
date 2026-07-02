@@ -113,7 +113,8 @@
 }
 
 @utility bg-turquoise-gradient {
-  background: var(--gradient-turquoise);
+  background-image: var(--gradient-turquoise);
+  background-color: oklch(0.78 0.11 195);
 }
 
 @layer base {
