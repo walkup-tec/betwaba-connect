@@ -177,7 +177,7 @@ function Home() {
               </span>
               <h1 className="mt-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-7xl">
                 Disparo de WhatsApp em larga escala para{" "}
-                <span className="bg-turquoise-gradient bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   casas de apostas
                 </span>
               </h1>
@@ -450,7 +450,7 @@ function Home() {
           <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               Comece a disparar em{" "}
-              <span className="bg-turquoise-gradient bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 larga escala
               </span>{" "}
               hoje mesmo

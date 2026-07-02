@@ -140,7 +140,7 @@ function CadastroPage() {
               </span>
               <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
                 Comece a disparar em{" "}
-                <span className="bg-turquoise-gradient bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   larga escala
                 </span>
               </h1>
