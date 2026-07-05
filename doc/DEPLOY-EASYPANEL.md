@@ -4,6 +4,8 @@ App **TanStack Start** (SSR) — não é site estático.
 
 ## Opção A — Dockerfile (recomendado)
 
+Evita falha do Nixpacks com Node 18 EOL no Easypanel.
+
 | Campo | Valor |
 |-------|-------|
 | Construção | **Dockerfile** |
@@ -13,14 +15,7 @@ App **TanStack Start** (SSR) — não é site estático.
 
 ## Opção B — Nixpacks
 
-| Campo | Valor |
-|-------|-------|
-| Instalação | `bun install --frozen-lockfile` |
-| Build | `bun run build` |
-| Início | `node .output/server/index.mjs` |
-| Porta | `3000` |
-
-O arquivo `nixpacks.toml` na raiz já define isso.
+Requer Node **22** (`nixpacks.toml` com `nodejs_22`). Se falhar, use Dockerfile.
 
 ## Validar após deploy
 
