@@ -1,22 +1,15 @@
-# Memória — betwaba-connect
+# Memória — betwaba-connect (bets_pv)
 
-## 2026-07-05 — 502 bet.waba.info
+## 2026-07-06 — Fix Traefik bet.waba.info
 
-**Contexto:** Landing TanStack Start SSR no Easypanel (`waba` / `bets_pv`). DNS `bet.waba.info` → `72.60.51.127` OK. Proxy retorna 502 (`Cannot GET /api/errors/bad-gateway`).
+**Easypanel:** projeto `waba`, serviço `bets_pv`  
+**Domínio:** `bet.waba.info`  
+**Repo:** `walkup-tec/betwaba-connect` branch `main`
 
-**Causa provável:**
-- Dockerfile com `PORT=80` conflitando com env Easypanel `PORT=3000`
-- Destino interno `https://waba_bets_pv:3000` (deve ser HTTP)
-- Zero-downtime reiniciando container (`Server closed successfully` nos logs)
+**Status:**
+- **502** — mesmo VIP Swarm stale que paginadevendas
+- Fix permanente: `traefik-permanent-bets-pv-vps.sh` (waba repo)
+- Backend correto: `http://tasks.waba_bets_pv:3000/`
 
-**Alterações (commit pendente push):**
-- `Dockerfile`: `PORT=3000`, `NITRO_HOST`/`NITRO_PORT`, HEALTHCHECK
-- `nixpacks.toml`: alinhado porta 3000
-- `doc/DEPLOY-EASYPANEL.md`: guia domínios e troubleshooting 502
-
-**Próximos passos:**
-1. Push + redeploy Easypanel
-2. Easypanel: domínios → HTTP `:3000`; desativar zero downtime
-3. SSL Let's Encrypt em `bet.waba.info`
-4. Validar `curl -I https://bet.waba.info/`
-5. Integrar cadastro com WABA API
+**Próximo passo:**
+Rodar no VPS: `/tmp/traefik-bets.sh install` (ver `doc/DEPLOY-EASYPANEL.md`)

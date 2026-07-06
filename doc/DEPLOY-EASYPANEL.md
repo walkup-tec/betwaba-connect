@@ -19,8 +19,10 @@ O proxy **sempre** fala HTTP com o container. Nunca use `https://` no destino in
 
 | Domínio público | Destino interno |
 |-----------------|-----------------|
-| `bet.waba.info` | `http://waba_bets_pv:3000/` |
-| `waba-bets-pv.achpyp.easypanel.host` | `http://waba_bets_pv:3000/` |
+| `bet.waba.info` | `http://tasks.waba_bets_pv:3000/` |
+| `waba-bets-pv.achpyp.easypanel.host` | `http://tasks.waba_bets_pv:3000/` |
+
+> **Nota:** `waba_bets_pv` (VIP Swarm) pode ficar stale após redeploys. Use `tasks.waba_bets_pv` se 502 persistir.
 
 ## Avançado
 
@@ -41,10 +43,30 @@ Deve retornar **200** com HTML da landing Bet Waba.
 
 ## 502 / `Cannot GET /api/errors/bad-gateway`
 
-1. Confirme destino interno **HTTP** `:3000` (não HTTPS).
-2. Logs devem mostrar `Listening on: http://0.0.0.0:3000` **sem** `Server closed` em loop.
-3. Env no serviço: `HOST=0.0.0.0`, `PORT=3000`.
-4. SSL Let's Encrypt na aba **Domínios → bet.waba.info → SSL**.
+Mesmo problema do VIP Swarm stale (`waba_bets_pv` → IP morto). **Solução permanente** (cron + timer 20s + watch):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/walkup-tec/waba/master/scripts/traefik-permanent-bets-pv-vps.sh -o /tmp/traefik-bets.sh
+sed -i 's/\r$//' /tmp/traefik-bets.sh && chmod +x /tmp/traefik-bets.sh
+/tmp/traefik-bets.sh install
+```
+
+Ou via wrapper deste repo:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/walkup-tec/betwaba-connect/main/scripts/traefik-fix-502-bets-pv.sh -o /root/traefik-fix-bets-pv.sh
+chmod +x /root/traefik-fix-bets-pv.sh
+/root/traefik-fix-bets-pv.sh install
+```
+
+Esperado: `bet.waba.info: 200`
+
+### Checklist Easypanel (`waba/bets_pv`)
+
+1. Destino interno **HTTP** `http://tasks.waba_bets_pv:3000/` (não `waba_bets_pv` VIP)
+2. `HOST=0.0.0.0`, `PORT=3000`
+3. Zero downtime: **OFF**
+4. SSL Let's Encrypt em `bet.waba.info`
 
 ## Notas
 
