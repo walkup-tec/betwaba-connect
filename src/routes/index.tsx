@@ -239,7 +239,7 @@ function Home() {
               { k: "Milhões", v: "de envios/mês" },
               { k: "99,9%", v: "de disponibilidade" },
               { k: "24/7", v: "operação contínua" },
-              { k: "R$ 0,32", v: "por envio" },
+              { k: "R$ 0,32", v: "envio a partir de" },
             ].map((m) => (
               <div key={m.v} className="text-center">
                 <div className="font-display text-3xl font-bold text-foreground sm:text-4xl">
