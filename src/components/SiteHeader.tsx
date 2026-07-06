@@ -14,7 +14,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <BetWabaLogo />
+        <BetWabaLogo size="nav" />
         <nav className="hidden items-center gap-8 md:flex" aria-label="Principal">
           {NAV.map((item) => (
             <a
