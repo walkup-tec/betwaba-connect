@@ -14,6 +14,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSubscribersRegisterRouteImport } from './routes/api/subscribers/register'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSubscribersRegisterRoute = ApiSubscribersRegisterRouteImport.update({
+  id: '/api/subscribers/register',
+  path: '/api/subscribers/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/privacidade': typeof PrivacidadeRoute
   '/termos': typeof TermosRoute
+  '/api/subscribers/register': typeof ApiSubscribersRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/privacidade': typeof PrivacidadeRoute
   '/termos': typeof TermosRoute
+  '/api/subscribers/register': typeof ApiSubscribersRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/privacidade': typeof PrivacidadeRoute
   '/termos': typeof TermosRoute
+  '/api/subscribers/register': typeof ApiSubscribersRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/login' | '/privacidade' | '/termos'
+  fullPaths: '/' | '/cadastro' | '/login' | '/privacidade' | '/termos' | '/api/subscribers/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/login' | '/privacidade' | '/termos'
-  id: '__root__' | '/' | '/cadastro' | '/login' | '/privacidade' | '/termos'
+  to: '/' | '/cadastro' | '/login' | '/privacidade' | '/termos' | '/api/subscribers/register'
+  id: '__root__' | '/' | '/cadastro' | '/login' | '/privacidade' | '/termos' | '/api/subscribers/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +86,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   TermosRoute: typeof TermosRoute
+  ApiSubscribersRegisterRoute: typeof ApiSubscribersRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/subscribers/register': {
+      id: '/api/subscribers/register'
+      path: '/api/subscribers/register'
+      fullPath: '/api/subscribers/register'
+      preLoaderRoute: typeof ApiSubscribersRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +142,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   TermosRoute: TermosRoute,
+  ApiSubscribersRegisterRoute: ApiSubscribersRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft, Check, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Check, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { SiteHeader } from "@/components/SiteHeader";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
-import { maskPhone, maskCpfCnpj, onlyDigits, validCpfCnpj } from "@/lib/masks";
+import { maskPhone, maskCpfCnpj, onlyDigits, stripCountryCode, validCpfCnpj } from "@/lib/masks";
 import { submitSignup } from "@/lib/signup";
 
 const TITLE = "Criar Conta — Bet Waba";
@@ -46,18 +46,24 @@ const schema = z.object({
     .max(255, "Máximo 255 caracteres"),
   whatsapp: z
     .string()
-    .refine((v) => onlyDigits(v).length >= 10 && onlyDigits(v).length <= 11, {
-      message: "WhatsApp inválido",
+    .refine((v) => {
+      const digits = stripCountryCode(v);
+      return digits.length >= 10 && digits.length <= 11;
+    }, {
+      message: "WhatsApp inválido (DDD + número, sem +55)",
     }),
   phone: z
     .string()
-    .refine((v) => onlyDigits(v).length >= 10 && onlyDigits(v).length <= 11, {
+    .refine((v) => {
+      const digits = stripCountryCode(v);
+      return digits.length >= 10 && digits.length <= 11;
+    }, {
       message: "Telefone inválido",
     }),
   document: z.string().refine(validCpfCnpj, { message: "CPF ou CNPJ inválido" }),
   password: z
     .string()
-    .min(8, "A senha deve ter no mínimo 8 caracteres")
+    .min(6, "A senha deve ter no mínimo 6 caracteres")
     .max(72, "Máximo 72 caracteres"),
 });
 
@@ -65,7 +71,7 @@ type FormData = z.infer<typeof schema>;
 
 function passwordStrength(pw: string) {
   let score = 0;
-  if (pw.length >= 8) score++;
+  if (pw.length >= 6) score++;
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
@@ -74,7 +80,7 @@ function passwordStrength(pw: string) {
 
 function CadastroPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -92,15 +98,22 @@ function CadastroPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await submitSignup(data);
-      setSuccess(true);
-      toast.success("Cadastro enviado com sucesso! Em breve entraremos em contato.");
-    } catch {
-      toast.error("Não foi possível enviar seu cadastro. Tente novamente.");
+      const result = await submitSignup(data);
+      setRedirecting(true);
+      toast.success(
+        result.message ||
+          "Conta criada no segmento Bets. Você receberá e-mail e WhatsApp de boas-vindas.",
+      );
+      window.setTimeout(() => {
+        window.location.href = result.loginUrl;
+      }, 1200);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Não foi possível enviar seu cadastro.";
+      toast.error(message);
     }
   };
 
-  if (success) {
+  if (redirecting) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
@@ -108,17 +121,10 @@ function CadastroPage() {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-primary">
             <Check className="h-8 w-8" />
           </div>
-          <h1 className="mt-6 text-3xl font-bold tracking-tight">Cadastro recebido</h1>
+          <h1 className="mt-6 text-3xl font-bold tracking-tight">Conta criada</h1>
           <p className="mt-4 text-muted-foreground">
-            Recebemos seus dados. Nosso time entrará em contato em breve para ativar sua conta e
-            iniciar sua operação no Bet Waba.
+            Segmento Bets ativo. Redirecionando para o painel WABA…
           </p>
-          <Button asChild variant="outline" className="mt-8">
-            <Link to="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para a home
-            </Link>
-          </Button>
         </main>
         <SiteFooter />
       </div>
@@ -152,7 +158,7 @@ function CadastroPage() {
             <ul className="space-y-3">
               {[
                 "Sem mensalidade e sem fidelidade",
-                "A partir de R$ 0,32 por envio",
+                "A partir de R$ 0,33 por envio",
                 "Disparos em larga escala com alta estabilidade",
                 "Suporte especializado incluso",
               ].map((f) => (
@@ -196,6 +202,9 @@ function CadastroPage() {
                       onChange: (e) => setValue("whatsapp", maskPhone(e.target.value), { shouldValidate: true }),
                     })}
                   />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    DDD brasileiro (ex.: 51), sem +55. Se inválido, usamos o celular do campo Telefone.
+                  </p>
                 </Field>
                 <Field label="Telefone" error={errors.phone?.message}>
                   <Input
@@ -223,7 +232,7 @@ function CadastroPage() {
                   <Input
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
-                    placeholder="Mínimo 8 caracteres"
+                    placeholder="Mínimo 6 caracteres"
                     {...register("password")}
                   />
                   <button
@@ -269,6 +278,10 @@ function CadastroPage() {
                   "Criar Conta"
                 )}
               </Button>
+
+              <p className="text-center text-xs text-muted-foreground">
+                Após o cadastro você será direcionado ao painel WABA para fazer login.
+              </p>
 
               <p className="text-center text-xs text-muted-foreground">
                 Ao criar sua conta você concorda com nossos{" "}

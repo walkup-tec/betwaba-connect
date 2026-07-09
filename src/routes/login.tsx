@@ -1,10 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { resolveWabaAppLoginUrl } from "@/lib/waba-api";
 
 const TITLE = "Entrar — Bet Waba";
-const DESCRIPTION = "Acesse sua conta Bet Waba.";
+const DESCRIPTION = "Acesse o painel WABA com sua conta Bet Waba.";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -16,19 +18,37 @@ export const Route = createFileRoute("/login")({
     ],
     links: [{ rel: "canonical", href: "/login" }],
   }),
-  component: () => (
+  component: LoginPage,
+});
+
+function LoginPage() {
+  const loginUrl = resolveWabaAppLoginUrl();
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      window.location.href = loginUrl;
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [loginUrl]);
+
+  return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center sm:px-6">
-        <h1 className="text-3xl font-bold tracking-tight">Entrar</h1>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
+        <h1 className="mt-6 text-3xl font-bold tracking-tight">Entrar</h1>
         <p className="mt-4 text-muted-foreground">
-          O login estará disponível em breve. Enquanto isso, crie sua conta gratuitamente.
+          Redirecionando para o painel WABA…
         </p>
-        <Button asChild className="mt-8 bg-turquoise-gradient text-primary-foreground">
-          <Link to="/cadastro">Criar Conta</Link>
-        </Button>
+        <p className="mt-6 text-sm text-muted-foreground">
+          Se não abrir automaticamente,{" "}
+          <a href={loginUrl} className="text-primary underline hover:opacity-90">
+            clique aqui para acessar
+          </a>
+          .
+        </p>
       </main>
       <SiteFooter />
     </div>
-  ),
-});
+  );
+}

@@ -1,5 +1,17 @@
 export const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
+/** Remove +55 e normaliza para até 11 dígitos (DDD + número). */
+export function stripCountryCode(value: string): string {
+  let normalized = onlyDigits(value);
+  while (normalized.startsWith("55") && normalized.length > 11) {
+    normalized = normalized.slice(2);
+  }
+  if (normalized.startsWith("55") && normalized.length === 11 && normalized.charAt(2) !== "9") {
+    normalized = normalized.slice(2);
+  }
+  return normalized.slice(0, 11);
+}
+
 export function maskPhone(v: string) {
   const d = onlyDigits(v).slice(0, 11);
   if (d.length <= 10) {

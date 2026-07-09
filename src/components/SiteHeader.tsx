@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BetWabaLogo } from "./BetWabaLogo";
 import { Button } from "./ui/button";
+import { resolveWabaAppLoginUrl } from "@/lib/waba-api";
 
 const NAV = [
   { label: "Benefícios", href: "/#beneficios" },
@@ -11,6 +12,8 @@ const NAV = [
 ];
 
 export function SiteHeader() {
+  const loginUrl = resolveWabaAppLoginUrl();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -27,12 +30,12 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Link
-            to="/login"
+          <a
+            href={loginUrl}
             className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline"
           >
             Entrar
-          </Link>
+          </a>
           <Button asChild size="sm" className="bg-turquoise-gradient text-primary-foreground hover:opacity-90">
             <Link to="/cadastro">Criar Conta</Link>
           </Button>

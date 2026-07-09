@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-border/40 bg-background">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-center">
         <div className="space-y-3">
-          <BetWabaLogo />
+          <BetWabaLogo size="footer" />
           <p className="max-w-sm text-sm text-muted-foreground">
             Plataforma especializada em disparos de WhatsApp em larga escala para o mercado de Bets.
           </p>

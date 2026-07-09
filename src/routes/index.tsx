@@ -27,7 +27,7 @@ import {
 
 const TITLE = "Bet Waba — Disparo de WhatsApp em larga escala para Bets";
 const DESCRIPTION =
-  "Plataforma de disparo de WhatsApp em massa para casas de apostas. Envio em larga escala, alta estabilidade, sem mensalidade. Pague apenas pelos envios, a partir de R$ 0,32.";
+  "Plataforma de disparo de WhatsApp em massa para casas de apostas. Envio em larga escala, alta estabilidade, sem mensalidade. Pague apenas pelos envios, a partir de R$ 0,33.";
 
 const FAQ = [
   {
@@ -36,7 +36,7 @@ const FAQ = [
   },
   {
     q: "Preciso pagar mensalidade ou taxa de adesão?",
-    a: "Não. O Bet Waba não cobra mensalidade, não exige fidelidade e não tem taxa de adesão. Você paga apenas pelos envios que realizar, a partir de R$ 0,32 por mensagem.",
+    a: "Não. O Bet Waba não cobra mensalidade, não exige fidelidade e não tem taxa de adesão. Você paga apenas pelos envios que realizar, a partir de R$ 0,33 por mensagem.",
   },
   {
     q: "A plataforma é indicada para o segmento de apostas?",
@@ -95,7 +95,7 @@ export const Route = createFileRoute("/")({
             "@type": "Offer",
             price: "0.32",
             priceCurrency: "BRL",
-            description: "A partir de R$ 0,32 por envio. Sem mensalidade. Sem fidelidade.",
+            description: "A partir de R$ 0,33 por envio. Sem mensalidade. Sem fidelidade.",
           },
         }),
       },
@@ -193,7 +193,7 @@ function Home() {
                   "Disparos em larga escala",
                   "Alta estabilidade e continuidade",
                   "Sem mensalidade e sem fidelidade",
-                  "A partir de R$ 0,32 por envio",
+                  "A partir de R$ 0,33 por envio",
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3 text-sm text-foreground/90">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
@@ -239,7 +239,7 @@ function Home() {
               { k: "Milhões", v: "de envios/mês" },
               { k: "99,9%", v: "de disponibilidade" },
               { k: "24/7", v: "operação contínua" },
-              { k: "R$ 0,32", v: "envio a partir de" },
+              { k: "R$ 0,33", v: "envio a partir de" },
             ].map((m) => (
               <div key={m.v} className="text-center">
                 <div className="font-display text-3xl font-bold text-foreground sm:text-4xl">
@@ -400,7 +400,7 @@ function Home() {
                 <span className="text-sm text-muted-foreground">A partir de</span>
               </div>
               <div className="mt-1 flex items-baseline gap-2">
-                <span className="font-display text-6xl font-bold text-foreground">R$ 0,32</span>
+                <span className="font-display text-6xl font-bold text-foreground">R$ 0,33</span>
                 <span className="text-muted-foreground">/ envio</span>
               </div>
               <ul className="mt-8 space-y-3">

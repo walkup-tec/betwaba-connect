@@ -68,7 +68,20 @@ Esperado: `bet.waba.info: 200`
 3. Zero downtime: **OFF**
 4. SSL Let's Encrypt em `bet.waba.info`
 
+## Variáveis (Easypanel → bets_pv)
+
+| Variável | Valor |
+|----------|-------|
+| `NODE_ENV` | `production` |
+| `HOST` | `0.0.0.0` |
+| `PORT` | `3000` |
+| `VITE_WABA_APP_LOGIN_URL` | `https://waba.draxsistemas.com.br/` |
+| `WABA_API_URL` | `https://waba.draxsistemas.com.br` |
+
+> `VITE_*` é embutida no build. Após alterar, **rebuild/redeploy** do serviço.
+
 ## Notas
 
 - Preset Nitro: `node-server` (ver `vite.config.ts`).
-- Cadastro ainda usa mock em `src/lib/signup.ts` — integração WABA API é próximo passo.
+- Cadastro: proxy `POST /api/subscribers/register` → WABA `POST /subscribers/register` (segmento Bets, boas-vindas, redirect login).
+- Login `/login` e header **Entrar** redirecionam para `VITE_WABA_APP_LOGIN_URL`.
