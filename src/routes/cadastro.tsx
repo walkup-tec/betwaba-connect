@@ -14,12 +14,16 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { maskPhone, maskCpfCnpj, onlyDigits, stripCountryCode, validCpfCnpj } from "@/lib/masks";
 import { submitSignup } from "@/lib/signup";
+import { fetchOfficialFromPrice, SALE_PRICING_FALLBACK_FROM } from "@/lib/waba-public-pricing";
 
 const TITLE = "Criar Conta — Bet Waba";
 const DESCRIPTION =
   "Crie sua conta no Bet Waba e comece a disparar mensagens de WhatsApp em larga escala para o mercado de Bets. Sem mensalidade, sem fidelidade.";
 
 export const Route = createFileRoute("/cadastro")({
+  loader: async () => ({
+    fromLabel: await fetchOfficialFromPrice("bets"),
+  }),
   head: () => ({
     meta: [
       { title: TITLE },
@@ -79,6 +83,7 @@ function passwordStrength(pw: string) {
 }
 
 function CadastroPage() {
+  const { fromLabel } = Route.useLoaderData();
   const [showPassword, setShowPassword] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const {
@@ -158,7 +163,7 @@ function CadastroPage() {
             <ul className="space-y-3">
               {[
                 "Sem mensalidade e sem fidelidade",
-                "A partir de R$ 0,38 por envio",
+                `A partir de ${fromLabel || SALE_PRICING_FALLBACK_FROM} por envio`,
                 "Disparos em larga escala com alta estabilidade",
                 "Suporte especializado incluso",
               ].map((f) => (

@@ -24,19 +24,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { fetchOfficialFromPrice, SALE_PRICING_FALLBACK_FROM } from "@/lib/waba-public-pricing";
 
 const TITLE = "Bet Waba — Disparo de WhatsApp em larga escala para Bets";
-const DESCRIPTION =
-  "Plataforma de disparo de WhatsApp em massa para casas de apostas. Envio em larga escala, alta estabilidade, sem mensalidade. Pague apenas pelos envios, a partir de R$ 0,38.";
+const buildDescription = (fromLabel: string) =>
+  `Plataforma de disparo de WhatsApp em massa para casas de apostas. Envio em larga escala, alta estabilidade, sem mensalidade. Pague apenas pelos envios, a partir de ${fromLabel}.`;
 
-const FAQ = [
+function buildFaq(fromLabel: string) {
+  return [
   {
     q: "Como funciona a plataforma Bet Waba?",
     a: "Você cria sua conta, importa seus contatos, configura sua mensagem e dispara em poucos cliques. Toda a infraestrutura de envio em larga escala fica por nossa conta — você acompanha entregas em tempo real pelo painel.",
   },
   {
     q: "Preciso pagar mensalidade ou taxa de adesão?",
-    a: "Não. O Bet Waba não cobra mensalidade, não exige fidelidade e não tem taxa de adesão. Você paga apenas pelos envios que realizar, a partir de R$ 0,38 por mensagem.",
+    a: `Não. O Bet Waba não cobra mensalidade, não exige fidelidade e não tem taxa de adesão. Você paga apenas pelos envios que realizar, a partir de ${fromLabel} por mensagem.`,
   },
   {
     q: "A plataforma é indicada para o segmento de apostas?",
@@ -62,24 +64,32 @@ const FAQ = [
     q: "Vocês oferecem suporte?",
     a: "Sim. Nosso time de suporte especializado acompanha sua operação e está pronto para auxiliar em cada etapa.",
   },
-];
+  ];
+}
 
 export const Route = createFileRoute("/")({
-  head: () => ({
+  loader: async () => ({
+    fromLabel: await fetchOfficialFromPrice("bets"),
+  }),
+  head: ({ loaderData }) => {
+    const fromLabel = loaderData?.fromLabel || SALE_PRICING_FALLBACK_FROM;
+    const description = buildDescription(fromLabel);
+    const faq = buildFaq(fromLabel);
+    return {
     meta: [
       { title: TITLE },
-      { name: "description", content: DESCRIPTION },
+      { name: "description", content: description },
       {
         name: "keywords",
         content:
           "disparo de WhatsApp, WhatsApp para bets, envio em massa, automação WhatsApp, plataforma de disparo, disparo em massa bets",
       },
       { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
+      { property: "og:description", content: description },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
       { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESCRIPTION },
+      { name: "twitter:description", content: description },
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [
@@ -89,13 +99,13 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Product",
           name: "Bet Waba",
-          description: DESCRIPTION,
+          description,
           brand: { "@type": "Brand", name: "Bet Waba" },
           offers: {
             "@type": "Offer",
-            price: "0.32",
+            price: fromLabel.replace("R$ ", "").replace(",", "."),
             priceCurrency: "BRL",
-            description: "A partir de R$ 0,38 por envio. Sem mensalidade. Sem fidelidade.",
+            description: `A partir de ${fromLabel} por envio. Sem mensalidade. Sem fidelidade.`,
           },
         }),
       },
@@ -104,7 +114,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({
+          mainEntity: faq.map((f) => ({
             "@type": "Question",
             name: f.q,
             acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -112,7 +122,8 @@ export const Route = createFileRoute("/")({
         }),
       },
     ],
-  }),
+  };
+  },
   component: Home,
 });
 
@@ -158,6 +169,8 @@ function SectionHeading({
 }
 
 function Home() {
+  const { fromLabel } = Route.useLoaderData();
+  const faq = buildFaq(fromLabel);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -193,7 +206,7 @@ function Home() {
                   "Disparos em larga escala",
                   "Alta estabilidade e continuidade",
                   "Sem mensalidade e sem fidelidade",
-                  "A partir de R$ 0,38 por envio",
+                  `A partir de ${fromLabel} por envio`,
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3 text-sm text-foreground/90">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
@@ -239,7 +252,7 @@ function Home() {
               { k: "Milhões", v: "de envios/mês" },
               { k: "99,9%", v: "de disponibilidade" },
               { k: "24/7", v: "operação contínua" },
-              { k: "R$ 0,38", v: "envio a partir de" },
+              { k: fromLabel, v: "envio a partir de" },
             ].map((m) => (
               <div key={m.v} className="text-center">
                 <div className="font-display text-3xl font-bold text-foreground sm:text-4xl">
@@ -400,7 +413,7 @@ function Home() {
                 <span className="text-sm text-muted-foreground">A partir de</span>
               </div>
               <div className="mt-1 flex items-baseline gap-2">
-                <span className="font-display text-6xl font-bold text-foreground">R$ 0,38</span>
+                <span className="font-display text-6xl font-bold text-foreground">{fromLabel}</span>
                 <span className="text-muted-foreground">/ envio</span>
               </div>
               <ul className="mt-8 space-y-3">
@@ -430,7 +443,7 @@ function Home() {
           <div className="mx-auto max-w-3xl px-4 py-24 sm:px-6">
             <SectionHeading eyebrow="FAQ" title="Perguntas frequentes" />
             <Accordion type="single" collapsible className="mt-12">
-              {FAQ.map((item, i) => (
+              {faq.map((item, i) => (
                 <AccordionItem key={i} value={`item-${i}`} className="border-border">
                   <AccordionTrigger className="text-left text-base font-medium text-foreground hover:text-primary">
                     {item.q}
