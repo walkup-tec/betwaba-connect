@@ -158,7 +158,7 @@ function CadastroPage() {
             <ul className="space-y-3">
               {[
                 "Sem mensalidade e sem fidelidade",
-                "A partir de R$ 0,33 por envio",
+                "A partir de R$ 0,38 por envio",
                 "Disparos em larga escala com alta estabilidade",
                 "Suporte especializado incluso",
               ].map((f) => (
